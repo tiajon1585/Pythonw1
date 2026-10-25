@@ -1,0 +1,19 @@
+#date and time
+from datetime import datetime
+
+#print title
+print("Tiajon1585's Excel Spreadsheet Automation Menu")
+
+#user options listed1
+menu = ["1. Input Data", "2. View Current Data", "3. Generate Report"]
+
+#menu options in list
+for option in menu:
+  print(option)
+
+#processes users choice
+choice = input()
+if choice == "1" or choice == "2" or choice == "3":
+  print(f"You selected {choice} at {datetime.now()}")
+else:
+  print("Error: invalid choice selected")  
