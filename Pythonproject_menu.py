@@ -11,8 +11,8 @@ print("2. View Current Data")
 print("3. Generate Report")
 
 #processes users choice
-choice = input():
+choice = input()
 if choice == "1" or choice == "2" or choice == "3":
-  print(f"You selected{choice} at {datetime.now()}")
+  print(f"You selected {choice} at {datetime.now()}")
   
 
