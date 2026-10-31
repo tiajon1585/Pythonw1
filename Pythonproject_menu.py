@@ -1,3 +1,4 @@
+
 #date and time
 from datetime import datetime
 
@@ -13,7 +14,7 @@ print("3. Generate Report")
 #processes users choice
 choice = input()
 if choice == "1" or choice == "2" or choice == "3":
-  print(f"You selected {choice} at {datetime.now()}")
-else 
-  print("Error: invalid choice selected")
+    print(f"You selected {choice} at {datetime.now()}")
+else:
+    print("Error: invalid choice selected")
 
