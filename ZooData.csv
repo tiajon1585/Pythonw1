@@ -1,0 +1,80 @@
+
+#date and time
+from datetime import datetime
+import os
+
+#converts weight from pounds to kilograms
+def convertData(weight):
+    converted = weight / 2.205
+    return converted
+
+#saves the entered weight data to the csv file
+def insertData(filePath, data):
+    try:
+        with open(filePath, "a") as file:
+            file.write(data + "\n")
+        return True
+
+    except Exception as error:
+        print("Error saving data:", error)
+        return False
+
+#displays the saved weight data and csv file path
+def viewData(filePath):
+    try:
+        with open(filePath, "r") as file:
+            print("The file", os.path.abspath(filePath))
+            print(file.read())
+
+    except Exception as error:
+        print("Error reading file:", error)
+
+#gets the user's date and weight and saves the converted data
+def getInput():
+    try:
+        entries = int(input("How many entries are you inputting? "))
+
+        for i in range(entries):
+            date = input("Enter a date: ")
+            weight = int(input("Enter the weight in pounds for the inputted date: "))
+
+            #calls convertData(weight), passes pounds, and returns kilograms
+            converted = convertData(weight)
+
+            data = date + "," + str(weight) + "," + str(converted)
+
+            if insertData("ZooData.csv", data):
+                print("The following data was saved at", datetime.now(), ":")
+                print(data)
+
+    except Exception as error:
+        print("Error entering data:", error)
+
+#print title
+print("============================================")
+print("Tiajon1585's Excel Spreadsheet Automation Menu")
+print("Choose a number from the following options")
+
+#user options listed
+menu = ["1. Input Data", "2. View Current Data", "3. Generate Report"]
+
+#menu options in list
+for option in menu:
+    print(option)
+
+#processes users choice
+choice = input()
+
+if choice == "1" or choice == "2" or choice == "3":
+    print(f"You selected {choice} at {datetime.now()}")
+else:
+    print("Error: invalid choice selected")
+
+if choice == "1":
+    getInput()
+
+elif choice == "2":
+    viewData("ZooData.csv")
+
+else:
+    print("Error: The chosen functionality is not implemented yet")
