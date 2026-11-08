@@ -1,0 +1,55 @@
+print("Tiajon1585")
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+student = [
+    'Steve', 'John','Bruce','Tiara',
+    'Ira','Savannah','Sade','Lauren',
+    'Shawn','Jacob'
+]
+
+subject = ['Math', 'Science']
+
+grades = [
+    92,85,
+    85,75,
+    85,96,
+    100,100,
+    85,95,
+    96,100,
+    75,85,
+    85,95,
+    75,85,
+    86,75
+]
+
+#Create a MultiIndex
+index = pd.MultiIndex.from_product(
+    [student, subject],
+    names=['Student','Subject']
+ )
+
+#create a DataFrame
+df = pd.DataFrame({'Grade': grades}, index=index)
+
+#display DataFrame
+print(df)
+
+#group grades by subject and calculate the average
+averageGrades = df.groupby(level='Subject').mean()
+
+#Display average
+print(averageGrades)
+
+#create bargraph
+
+averageGrades['Grade'].plot(kind='bar')
+
+plt.xlabel("Average Grade by Subject")
+plt.ylabel("Grade")
+plt.title("Tiajon1585 Average Grades")
+plt.xticks(rotation=0)
+plt.show()
+
+              
