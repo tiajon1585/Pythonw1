@@ -170,7 +170,6 @@ def generateReport(filePath):
 
 
 #print title
-print("============================================")
 print("Tiajon1585's Excel Spreadsheet Automation Menu")
 print("Choose a number from the following options")
 
