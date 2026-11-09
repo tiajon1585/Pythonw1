@@ -1,0 +1,191 @@
+
+#date and time
+from datetime import datetime
+import os
+import csv
+from openpyxl import Workbook
+from openpyxl.chart import BarChart, LineChart, Reference
+
+
+#converts weight from pounds to kilograms
+def convertData(weight):
+    converted = weight / 2.205
+    return converted
+
+
+#saves the entered weight data to the csv file
+def insertData(filePath, data):
+    try:
+        with open(filePath, "a") as file:
+            file.write(data + "\n")
+        return True
+
+    except Exception as error:
+        print("Error saving data:", error)
+        return False
+
+
+#displays the saved weight data and csv file path
+def viewData(filePath):
+    try:
+        with open(filePath, "r") as file:
+            print("The file", os.path.abspath(filePath))
+            print(file.read())
+
+    except Exception as error:
+        print("Error reading file:", error)
+
+
+#gets the user's date and weight and saves the converted data
+def getInput():
+    try:
+        entries = int(input("How many entries are you inputting? "))
+
+        for i in range(entries):
+            date = input("Enter a date: ")
+            weight = int(input("Enter the weight in pounds for the inputted date: "))
+
+            #calls convertData(weight), passes pounds, and returns kilograms
+            converted = convertData(weight)
+
+            data = date + "," + str(weight) + "," + str(converted)
+
+            if insertData("ZooData.csv", data):
+                print("The following data was saved at", datetime.now(), ":")
+                print(data)
+
+    except Exception as error:
+        print("Error entering data:", error)
+
+
+#creates a bar or line chart using the csv file
+#arguments: filePath (string), chartType (string)
+#return value: None
+def createChart(filePath, chartType):
+
+    print("Choose which data you want to use:")
+    print("1. Pounds")
+    print("2. Kilograms")
+
+    dataChoice = input("Enter 1 or 2: ")
+
+    if dataChoice == "1":
+        column = 1
+        yLabel = "Pounds"
+
+    elif dataChoice == "2":
+        column = 2
+        yLabel = "Kilograms"
+
+    else:
+        print("Error: invalid data selection")
+        return
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Weight Data"
+
+    ws.append(["Date", yLabel])
+
+    try:
+        with open(filePath, "r", newline="") as file:
+            reader = csv.reader(file)
+
+            for row in reader:
+                if not row:
+                    continue
+
+                date = row[0]
+                weight = float(row[column])
+
+                ws.append([date, weight])
+
+    except Exception as error:
+        print("Error reading CSV file:", error)
+        return
+
+    if ws.max_row < 2:
+        print("Error: no data available")
+        return
+
+    if chartType == "bar":
+        chart = BarChart()
+
+    elif chartType == "line":
+        chart = LineChart()
+
+    else:
+        print("Error: invalid chart type")
+        return
+
+    chart.title = "Tiajon1585 " + datetime.now().strftime("%m/%d/%Y")
+    chart.x_axis.title = "Date"
+    chart.y_axis.title = yLabel
+
+    data = Reference(ws, min_col=2, min_row=1,
+                     max_row=ws.max_row)
+
+    dates = Reference(ws, min_col=1, min_row=2,
+                      max_row=ws.max_row)
+
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(dates)
+
+    chart.width = 15
+    chart.height = 10
+
+    ws.add_chart(chart, "D2")
+
+    wb.save("final.xlsx")
+
+    print("Your report was saved to final.xlsx")
+
+
+#asks the user to select a chart type
+#argument: filePath (string)
+#return value: None
+def generateReport(filePath):
+
+    print("Which chart would you like to create?")
+    print("1. Line Chart")
+    print("2. Bar Chart")
+
+    chartChoice = input("Enter 1 or 2: ")
+
+    if chartChoice == "1":
+        createChart(filePath, "line")
+
+    elif chartChoice == "2":
+        createChart(filePath, "bar")
+
+    else:
+        print("Error: invalid chart selection")
+
+
+#print title
+print("Tiajon1585's Excel Spreadsheet Automation Menu")
+print("Choose a number from the following options")
+
+#user options listed
+menu = ["1. Input Data", "2. View Current Data", "3. Generate Report"]
+
+#menu options in list
+for option in menu:
+    print(option)
+
+#processes users choice
+choice = input()
+
+if choice == "1" or choice == "2" or choice == "3":
+    print(f"You selected {choice} at {datetime.now()}")
+else:
+    print("Error: invalid choice selected")
+
+if choice == "1":
+    getInput()
+
+elif choice == "2":
+    viewData("ZooData.csv")
+
+elif choice == "3":
+    generateReport("ZooData.csv")
