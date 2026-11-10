@@ -1,0 +1,144 @@
+
+#Student ID
+print("Tiajon1585")
+
+#import required libraries
+import os
+import csv
+import matplotlib.pyplot as plt
+from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.chart import PieChart, Reference
+
+#change directory to the FinalExam folder
+os.chdir("C:\\FinalExam")
+
+
+#asks the user for five numbers and displays the total
+def askUser():
+
+    total = 0
+
+    #loop asks for five numbers and adds the five numbers to the total
+    for i in range(5):
+        number = int(input("Enter a number: "))
+        total = total + number
+
+    print("The total of the five numbers is:", total)
+
+
+#asks for five names and annual incomes and saves them
+def askIncome():
+
+    #this loop collects five names and incomes and appends them to final.csv
+    for i in range(5):
+        name = input("Enter the person's name: ")
+        income = int(input("Enter the annual income: "))
+
+        with open("final.csv", "a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([name, income])
+
+    print("The five entries have been saved to final.csv")
+
+
+#creates a pie chart using Excel
+def excelPie():
+
+    #creates a new Excel workbook
+    wb = Workbook()
+
+    #selects the active worksheet
+    ws = wb.active
+
+    #names the worksheet
+    ws.title = "Annual Income"
+
+    #opens the existing CSV file
+    with open("final.csv", "r", newline="") as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if not row:
+                continue
+
+            #converts the income into an integer
+            name = row[0]
+            income = int(row[1])
+
+            #adds the name and income to the worksheet
+            ws.append([name, income])
+
+    #creates the Excel pie chart
+    chart = PieChart()
+
+    #selects the income values for the chart
+    data = Reference(ws, min_col=2, min_row=1,
+                     max_row=ws.max_row)
+
+    #selects the names for the chart labels
+    labels = Reference(ws, min_col=1, min_row=1,
+                       max_row=ws.max_row)
+
+    #adds the income values to the chart
+    chart.add_data(data)
+
+    #adds the names as chart labels
+    chart.set_categories(labels)
+
+    #chart title using studentID and current date/time
+    chart.title = "Tiajon1585 " + datetime.now().strftime("%B %d, %Y")
+
+    #chart width
+    chart.width = 15
+
+    #chart height
+    chart.height = 10
+
+    #places the chart in the worksheet
+    ws.add_chart(chart, "D2")
+
+    #saves the Excel file with the chart
+    wb.save("final.xlsx")
+
+    print("The Excel pie chart was saved to final.xlsx")
+
+
+#creates a vertical bar graph using matplotlib
+def verticalBar():
+
+    names = []
+    incomes = []
+
+    with open("final.csv", "r", newline="") as file:
+        reader = csv.reader(file)
+
+        for row in reader:
+            if not row:
+                continue
+
+            names.append(row[0])
+            incomes.append(int(row[1]))
+
+    plt.bar(names, incomes)
+
+    plt.title("Tiajon1585 " + datetime.now().strftime("%B %d, %Y"))
+    plt.xlabel("Names")
+    plt.ylabel("Annual Income")
+
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+
+#main function calls functions
+def main():
+
+    askUser()
+    askIncome()
+    excelPie()
+    verticalBar()
+
+
+
+main()
